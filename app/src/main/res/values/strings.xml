@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Labirynt</string>
+    <string name="_2020_adam_lewandowski_micha_jarosz"><![CDATA[2020 - Adam Lewandowski & Michał Jarosz]]></string>
+    <string-array name="levels">
+        <item>Łatwy</item>
+        <item>Średni</item>
+        <item>Trudny</item>
+        <item>Bardzo trudny</item>
+    </string-array>
+    <string-array name="steering">
+        <item>Akcelerometr</item>
+        <item>Dotyk ekranu</item>
+    </string-array>
+</resources>

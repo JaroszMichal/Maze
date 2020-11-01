@@ -1,0 +1,2 @@
+rootProject.name='Labirynt2'
+include ':app'
