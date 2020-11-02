@@ -25,8 +25,8 @@ public class Maze {
         this.height = height;
         start = new Point();
         target = new Point();
-        this.start.x = 3;
-        this.start.y = 3;
+        this.start.x = 0;
+        this.start.y = 0;
         this.target.x = width-1;
         this.target.y = height-1;
         cellVisited = new boolean[width][height];
@@ -209,7 +209,7 @@ public class Maze {
                     canvas.drawLine(i*cellSize+horizontalMargin,j*cellSize+verticalMargin,i*cellSize+horizontalMargin, (j+1)*cellSize+verticalMargin, paint);
             }
         paint.setColor(Color.GREEN);
-        canvas.drawCircle((int)((target.x+0.5)*cellSize+horizontalMargin), (int)((target.y+0.5)*cellSize+verticalMargin), (int)(cellSize/4), paint);
+        canvas.drawCircle((int)((target.x+0.5)*cellSize+horizontalMargin), (int)((target.y+0.5)*cellSize+verticalMargin), (int)(cellSize/6), paint);
     }
 
     public Point getStartBallPosition(float proportion){

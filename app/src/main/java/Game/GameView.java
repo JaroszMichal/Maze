@@ -20,7 +20,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private Thread thread;
     private boolean isPlaying;
     private int screenX, screenY;
-    public static float screenRatioX, screenRatioY;
     private Paint paint;
     private Ball ball;
     boolean[] ballMoveDirection;
@@ -38,6 +37,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private boolean inTheDarkness;
     private SharedPreferences prefs;
     private GameActivity activity;
+    double spinRadius;
 
     public GameView(GameActivity activity, int screenX, int screenY){//, boolean inTheDarkness) {
         super(activity);
@@ -46,8 +46,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         this.screenX = screenX;
         this.screenY = screenY;
         isPlaying = true;
-        screenRatioX = 1920f / screenX;
-        screenRatioY = 1080f / screenY;
         background1 = new Background(screenX, screenX, getResources());
         background2 = new Background(screenX, screenX, getResources());
         background2.x = screenX;
@@ -76,7 +74,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             this.accSteering = true;
         else
             this.accSteering = false;
-        proportion = (float)2.0/3;
+        proportion = (float)1.0/2;
         ball = new Ball((int)(maze.getCellSize()*proportion) ,getResources());
         currentBallPosition = new Point();
         currentBallPosition.x = maze.getStartBallPosition(proportion).x;
@@ -94,6 +92,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         accZ=0;
         this.inTheDarkness = inTheDarkness;
         gameTime=0;
+        spinRadius = radius+1;
     }
 
     @Override
@@ -136,6 +135,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                         tryToMove.x = tmpX;
                         tryToMove.y = tmpY;
                         if (!isColision(tryToMove)) posX = tmpX;
+                        else
+                            tmpX-=znakX;
                     }
                     if (i<y) {
                         tmpY += znakY;
@@ -174,6 +175,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                             tryToMove.x = tmpX;
                             tryToMove.y = tmpY;
                             if (!isColision(tryToMove)) posX = tmpX;
+                            else
+                                tmpX-=znakX;
                         }
                         if (i<y) {
                             tmpY += znakY;
@@ -186,19 +189,41 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     currentBallPosition.y = posY;
                 }else{}
         else {
-            boolean xInTarget = false;
-            boolean yInTarget = false;
-            if (currentBallPosition.x +radius > maze.getTargetBallCenterPosition().x) currentBallPosition.x--;
+//            boolean xInTarget = false;
+//            boolean yInTarget = false;
+//            if (currentBallPosition.x +radius > maze.getTargetBallCenterPosition().x) currentBallPosition.x--;
+//            else
+//                if (currentBallPosition.x +radius < maze.getTargetBallCenterPosition().x) currentBallPosition.x++;
+//                else
+//                    xInTarget = true;
+//            if (currentBallPosition.y +radius > maze.getTargetBallCenterPosition().y) currentBallPosition.y--;
+//            else
+//                if (currentBallPosition.y +radius < maze.getTargetBallCenterPosition().y) currentBallPosition.y++;
+//                else
+//                    yInTarget = true;
+//                isOver = xInTarget && yInTarget;
+            if ((maze.getTargetBallCenterPosition().y==currentBallPosition.y)&&(maze.getTargetBallCenterPosition().x==currentBallPosition.x))
+            isOver=true;
             else
-                if (currentBallPosition.x +radius < maze.getTargetBallCenterPosition().x) currentBallPosition.x++;
-                else
-                    xInTarget = true;
-            if (currentBallPosition.y +radius > maze.getTargetBallCenterPosition().y) currentBallPosition.y--;
-            else
-                if (currentBallPosition.y +radius < maze.getTargetBallCenterPosition().y) currentBallPosition.y++;
-                else
-                    yInTarget = true;
-                isOver = xInTarget && yInTarget;
+            {
+                double targetX = maze.getTargetBallCenterPosition().x;
+                double targetY = maze.getTargetBallCenterPosition().y;
+                double ballCenterX = currentBallPosition.x+radius;
+                double ballCenterY = currentBallPosition.y+radius;
+                double newRadius = Math.sqrt(Math.pow(ballCenterY-targetY,2)+Math.pow(ballCenterX-targetX,2));
+                double alfa = Math.PI / 10;
+                double beta =Math.asin((targetY-ballCenterY)/newRadius);
+                if (ballCenterX<targetX) beta = -(Math.PI+beta);
+                beta-=alfa;
+                if (spinRadius>radius)
+                    spinRadius = newRadius;
+                spinRadius-=radius/120.0;
+                ballCenterX = targetX+spinRadius*Math.cos(beta);
+                ballCenterY = targetY-spinRadius*Math.sin(beta);
+                currentBallPosition.x = (int)(ballCenterX-radius);
+                currentBallPosition.y = (int)(ballCenterY-radius);
+                isOver = spinRadius<1;
+            }
         }
     }
 
@@ -214,14 +239,27 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             paint.setTypeface(Typeface.create("Arial",Typeface.ITALIC));
             paint.setTextAlign(Paint.Align.RIGHT);
             canvas.drawText(timeFormat(gameTime+System.currentTimeMillis()-startTime),((currentBallPosition.x>canvas.getWidth()*2/3)&&(currentBallPosition.y<300))? (canvas.getWidth()/2):(canvas.getWidth()-50), 100,paint);
-            if (!finalCountDown)
-                if (isGameOver())
-                    finalCountDown = true;
+
+            finalCountDown = distance(currentBallPosition.x+radius, currentBallPosition.y+radius, maze.getTargetBallCenterPosition())<radius;
+
             if (isOver){
                 isPlaying = false;
                 gameTime+=System.currentTimeMillis()-startTime;
-                getHolder().unlockCanvasAndPost(canvas);
-                saveifHighScore();
+                if (saveifHighScore()){
+                    paint.setColor(Color.RED);
+                    paint.setTextSize(150);
+                    paint.setTypeface(Typeface.create("Arial",Typeface.BOLD_ITALIC));
+                    paint.setTextAlign(Paint.Align.CENTER);
+                    canvas.drawText("New record: "+timeFormat(gameTime),canvas.getWidth()/2,canvas.getHeight()/2,paint);
+                    getHolder().unlockCanvasAndPost(canvas);
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                    getHolder().unlockCanvasAndPost(canvas);
                 activity.startActivity(new Intent(activity, WhatNextActivity.class));
                 return;
             }
@@ -229,12 +267,16 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         }
     }
 
-    private void saveifHighScore() {
-        if (prefs.getLong("highscore", 0)>gameTime){
+    private boolean saveifHighScore() {
+        String lv=prefs.getString("level", "Łatwy");
+        Long l =prefs.getLong("highscore"+lv, 1000000);
+        if (gameTime<l){
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong("highscore", gameTime);
+            editor.putLong("highscore"+lv, gameTime);
             editor.apply();
+            return true;
         }
+        return false;
     }
 
     private String timeFormat(long t) {
@@ -253,15 +295,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         while (result.length()<i)
             result = "0"+result;
         return result+add;
-    }
-
-    private boolean isGameOver() {
-        Point target = new Point();
-        target = maze.getTargetBallCenterPosition();
-        if(distance(currentBallPosition.x+radius, currentBallPosition.y+radius, target)<(radius))
-            return true;
-        else
-            return false;
     }
 
     private boolean isColision(Point ballPosition) {
