@@ -18,7 +18,11 @@
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.noActionBar" />
         <activity
-            android:name="Game.WhatNextActivity"
+            android:name="Game.WinNextActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.noActionBar" />
+        <activity
+            android:name="Game.LostNextActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.noActionBar" />
         <activity

@@ -9,7 +9,7 @@ import android.view.WindowManager;
 
 import com.example.labirynt2.R;
 
-public class WhatNextActivity extends AppCompatActivity {
+public class WinNextActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,19 +19,19 @@ public class WhatNextActivity extends AppCompatActivity {
         findViewById(R.id.nextlv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(WhatNextActivity.this, GameActivity.class));
+                startActivity(new Intent(WinNextActivity.this, GameActivity.class));
             }
         });
         findViewById(R.id.mainMenu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(WhatNextActivity.this, MainActivity.class));
+                startActivity(new Intent(WinNextActivity.this, MainActivity.class));
             }
         });
         findViewById(R.id.options).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(WhatNextActivity.this, OptionsActivity.class));
+                startActivity(new Intent(WinNextActivity.this, OptionsActivity.class));
             }
         });
     }

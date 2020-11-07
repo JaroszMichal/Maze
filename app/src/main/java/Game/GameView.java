@@ -37,7 +37,14 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private boolean inTheDarkness;
     private SharedPreferences prefs;
     private GameActivity activity;
-    double spinRadius;
+    private double spinRadius;
+    private double gravity;
+    private boolean isTimeLimit;
+    private long timeLimit;
+    private boolean win;
+    private boolean lost;
+
+
 
     public GameView(GameActivity activity, int screenX, int screenY){//, boolean inTheDarkness) {
         super(activity);
@@ -46,27 +53,37 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         this.screenX = screenX;
         this.screenY = screenY;
         isPlaying = true;
+        win = false;
+        lost = false;
         background1 = new Background(screenX, screenX, getResources());
         background2 = new Background(screenX, screenX, getResources());
         background2.x = screenX;
-        String lv=prefs.getString("level", "Łatwy");
+        String lv=prefs.getString("gamemode", "Bez limitu czasu");
+        isTimeLimit=false;
+        timeLimit=0;
+        if (lv.equals("Z limitem czasu")) isTimeLimit=true;
+        lv=prefs.getString("level", "Łatwy");
         int w=10;
         int h=5;
         if (lv.equals("Łatwy")){
             w = 10;
             h = 5;
+            if (isTimeLimit) timeLimit=30000;
         }
         if (lv.equals("Średni")){
             w = 20;
             h = 10;
+            if (isTimeLimit) timeLimit=60000;
         }
         if (lv.equals("Trudny")){
             w = 40;
             h = 20;
+            if (isTimeLimit) timeLimit=120000;
         }
         if (lv.equals("Bardzo trudny")){
             w = 60;
             h = 30;
+            if (isTimeLimit) timeLimit=180000;
         }
         maze = new Maze(w,h, screenX, screenY);
         lv=prefs.getString("steering", "Akcelerometr");
@@ -74,7 +91,18 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             this.accSteering = true;
         else
             this.accSteering = false;
+        lv=prefs.getString("gravity", "Silna");
+        gravity = 1;
+        if (lv.equals("Słaba")) gravity = .1;
+        if (lv.equals("Średnia")) gravity = .4;
+        lv=prefs.getString("ballsize", "Mała");
         proportion = (float)1.0/2;
+        if (lv.equals("Mała"))
+            proportion = (float)1.0/2;
+        if (lv.equals("Średnia"))
+            proportion = (float)2.0/3;
+        if (lv.equals("Duża"))
+            proportion = (float)5.0/6;
         ball = new Ball((int)(maze.getCellSize()*proportion) ,getResources());
         currentBallPosition = new Point();
         currentBallPosition.x = maze.getStartBallPosition(proportion).x;
@@ -106,7 +134,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     }
 
     private void update(){
-        int distanceToMove;
+        int distanceToMove = (int)(gravity*80);
         Point tryToMove = new Point();
         int x,y;
         int posX = currentBallPosition.x;
@@ -114,7 +142,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         int znakX, znakY;
         if (!finalCountDown)
             if (accSteering){
-                distanceToMove = 80;
                 y = (int)(distanceToMove*accX/10);
                 x = (int)(distanceToMove*accY/10);
                 if (x>=0) znakX = 1;
@@ -150,7 +177,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             }
             else
                 if (ballMoveDirection[0]||ballMoveDirection[1]||ballMoveDirection[2]||ballMoveDirection[3]) {
-                    distanceToMove = 5;
                     x = 0;
                     y = 0;
                     if (ballMoveDirection[0]) y = -distanceToMove;
@@ -223,6 +249,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 currentBallPosition.x = (int)(ballCenterX-radius);
                 currentBallPosition.y = (int)(ballCenterY-radius);
                 isOver = spinRadius<1;
+                if (isOver)
+                    win = true;
             }
         }
     }
@@ -238,29 +266,56 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             paint.setTextSize(60);
             paint.setTypeface(Typeface.create("Arial",Typeface.ITALIC));
             paint.setTextAlign(Paint.Align.RIGHT);
-            canvas.drawText(timeFormat(gameTime+System.currentTimeMillis()-startTime),((currentBallPosition.x>canvas.getWidth()*2/3)&&(currentBallPosition.y<300))? (canvas.getWidth()/2):(canvas.getWidth()-50), 100,paint);
+            long t = System.currentTimeMillis();
+            gameTime += (t-startTime);
+            startTime = t;
+            if (isTimeLimit) {
+                long time = timeLimit - gameTime;
+                if (time<0) time = 0;
+                if (time<10000)
+                    if (time%1000 <500)
+                        paint.setColor(Color.RED);
+                    else
+                        paint.setColor(Color.LTGRAY);
+                canvas.drawText(timeFormat(time), ((currentBallPosition.x > canvas.getWidth() * 2 / 3) && (currentBallPosition.y < 300)) ? (canvas.getWidth() / 2) : (canvas.getWidth() - 50), 100, paint);
+                if (!isOver) {
+                    isOver = (time<=0);
+                    if (isOver) lost = true;
+                }
+            } else
+                canvas.drawText(timeFormat(gameTime),((currentBallPosition.x>canvas.getWidth()*2/3)&&(currentBallPosition.y<300))? (canvas.getWidth()/2):(canvas.getWidth()-50), 100,paint);
 
-            finalCountDown = distance(currentBallPosition.x+radius, currentBallPosition.y+radius, maze.getTargetBallCenterPosition())<radius;
-
+            finalCountDown = distance(currentBallPosition.x+radius, currentBallPosition.y+radius, maze.getTargetBallCenterPosition())<1.2*radius*(1-proportion);
             if (isOver){
                 isPlaying = false;
-                gameTime+=System.currentTimeMillis()-startTime;
-                if (saveifHighScore()){
+                if (win){
                     paint.setColor(Color.RED);
                     paint.setTextSize(150);
                     paint.setTypeface(Typeface.create("Arial",Typeface.BOLD_ITALIC));
                     paint.setTextAlign(Paint.Align.CENTER);
-                    canvas.drawText("New record: "+timeFormat(gameTime),canvas.getWidth()/2,canvas.getHeight()/2,paint);
+                    canvas.drawText("Wygrałeś!, Twój czas: "+timeFormat(gameTime),canvas.getWidth()/2,canvas.getHeight()/2,paint);
                     getHolder().unlockCanvasAndPost(canvas);
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    activity.startActivity(new Intent(activity, WinNextActivity.class));
                 }
-                else
+                if (lost) {
+                    paint.setColor(Color.RED);
+                    paint.setTextSize(150);
+                    paint.setTypeface(Typeface.create("Arial",Typeface.BOLD_ITALIC));
+                    paint.setTextAlign(Paint.Align.CENTER);
+                    canvas.drawText("P o r a ż k a",canvas.getWidth()/2,canvas.getHeight()/2,paint);
                     getHolder().unlockCanvasAndPost(canvas);
-                activity.startActivity(new Intent(activity, WhatNextActivity.class));
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    activity.startActivity(new Intent(activity, LostNextActivity.class));
+                }
                 return;
             }
             getHolder().unlockCanvasAndPost(canvas);

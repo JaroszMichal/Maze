@@ -24,13 +24,13 @@ public class OptionsActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
         Spinner levelSpinner = findViewById((R.id.spinner_level));
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.levels, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        levelSpinner.setAdapter(adapter);
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.levels, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        levelSpinner.setAdapter(adapter1);
 //  Wczytuję aktualną pozycję spinnera poziomu trudności gry.
         prefs = this.getSharedPreferences("game", Context.MODE_PRIVATE);
         String lv=prefs.getString("level", "Łatwy");
-        int spinnerPosition = adapter.getPosition(lv);
+        int spinnerPosition = adapter1.getPosition(lv);
         levelSpinner.setSelection(spinnerPosition);
         levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -50,7 +50,7 @@ public class OptionsActivity extends AppCompatActivity implements AdapterView.On
             }
         });
 
-        Spinner SteeringSpinner = findViewById((R.id.spinner_sterowanie));
+        Spinner SteeringSpinner = findViewById((R.id.spinner_steering));
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.steering, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         SteeringSpinner.setAdapter(adapter2);
@@ -67,6 +67,84 @@ public class OptionsActivity extends AppCompatActivity implements AdapterView.On
                 prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString("steering", text);
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        Spinner GravitySpinner = findViewById((R.id.spinner_gravity));
+        ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(this, R.array.gravity, android.R.layout.simple_spinner_item);
+        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        GravitySpinner.setAdapter(adapter3);
+//  Wczytuję aktualną pozycję spinnera prędkości kulki
+        lv=prefs.getString("gravity", "Silna");
+        spinnerPosition = adapter3.getPosition(lv);
+        GravitySpinner.setSelection(spinnerPosition);
+        GravitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
+                ((TextView) parent.getChildAt(0)).setTextSize(25);
+                String text = parent.getItemAtPosition(position).toString();
+                prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("gravity", text);
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        Spinner BallSizeSpinner = findViewById((R.id.spinner_size));
+        ArrayAdapter<CharSequence> adapter4 = ArrayAdapter.createFromResource(this, R.array.ballsize, android.R.layout.simple_spinner_item);
+        adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        BallSizeSpinner.setAdapter(adapter4);
+//  Wczytuję aktualną pozycję spinnera prędkości kulki
+        lv=prefs.getString("ballsize", "Mała");
+        spinnerPosition = adapter4.getPosition(lv);
+        BallSizeSpinner.setSelection(spinnerPosition);
+        BallSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
+                ((TextView) parent.getChildAt(0)).setTextSize(25);
+                String text = parent.getItemAtPosition(position).toString();
+                prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("ballsize", text);
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        Spinner GameModeSpinner = findViewById((R.id.spinner_gamemode));
+        ArrayAdapter<CharSequence> adapter5 = ArrayAdapter.createFromResource(this, R.array.gamemode, android.R.layout.simple_spinner_item);
+        adapter5.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        GameModeSpinner.setAdapter(adapter5);
+//  Wczytuję aktualną pozycję spinnera prędkości kulki
+        lv=prefs.getString("gamemode", "Bez limitu czasowego");
+        spinnerPosition = adapter5.getPosition(lv);
+        GameModeSpinner.setSelection(spinnerPosition);
+        GameModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
+                ((TextView) parent.getChildAt(0)).setTextSize(25);
+                String text = parent.getItemAtPosition(position).toString();
+                prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("gamemode", text);
                 editor.apply();
             }
 

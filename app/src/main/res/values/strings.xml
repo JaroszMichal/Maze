@@ -11,4 +11,18 @@
         <item>Akcelerometr</item>
         <item>Dotyk ekranu</item>
     </string-array>
+    <string-array name="ballsize">
+        <item>Mała</item>
+        <item>Średnia</item>
+        <item>Duża</item>
+    </string-array>
+    <string-array name="gravity">
+        <item>Słaba</item>
+        <item>Średnia</item>
+        <item>Silna</item>
+    </string-array>
+    <string-array name="gamemode">
+        <item>Bez limitu czasu</item>
+        <item>Z limitem czasu</item>
+    </string-array>
 </resources>
