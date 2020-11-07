@@ -194,7 +194,7 @@ public class Maze {
 
     }
 
-    public void drawMaze(Canvas canvas, int screenWidth, int screenHeight, Paint paint){
+    public void drawMaze(Canvas canvas, int screenWidth, int screenHeight, int radius, Paint paint){
         paint.setStrokeWidth(cellSize / 20);
         paint.setColor(Color.WHITE);
         for (int i = 0;i<width;i++)
@@ -209,7 +209,7 @@ public class Maze {
                     canvas.drawLine(i*cellSize+horizontalMargin,j*cellSize+verticalMargin,i*cellSize+horizontalMargin, (j+1)*cellSize+verticalMargin, paint);
             }
         paint.setColor(Color.GREEN);
-        canvas.drawCircle((int)((target.x+0.5)*cellSize+horizontalMargin), (int)((target.y+0.5)*cellSize+verticalMargin), (int)(cellSize/6), paint);
+        canvas.drawCircle((int)((target.x+0.5)*cellSize+horizontalMargin), (int)((target.y+0.5)*cellSize+verticalMargin), 2*radius / 3, paint);
     }
 
     public Point getStartBallPosition(float proportion){

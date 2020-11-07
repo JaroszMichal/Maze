@@ -259,7 +259,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         if (getHolder().getSurface().isValid()){
             Canvas canvas = getHolder().lockCanvas();
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
-            maze.drawMaze(canvas,screenX,screenY,paint);
+            maze.drawMaze(canvas,screenX,screenY, radius, paint);
             canvas.drawBitmap(ball.ballBitmap,currentBallPosition.x , currentBallPosition.y, paint);
 
             paint.setColor(Color.LTGRAY);
@@ -285,7 +285,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             } else
                 canvas.drawText(timeFormat(gameTime),((currentBallPosition.x>canvas.getWidth()*2/3)&&(currentBallPosition.y<300))? (canvas.getWidth()/2):(canvas.getWidth()-50), 100,paint);
 
-            finalCountDown = distance(currentBallPosition.x+radius, currentBallPosition.y+radius, maze.getTargetBallCenterPosition())<1.2*radius*(1-proportion);
+            finalCountDown = distance(currentBallPosition.x+radius, currentBallPosition.y+radius, maze.getTargetBallCenterPosition())<2*radius/3;
             if (isOver){
                 isPlaying = false;
                 if (win){

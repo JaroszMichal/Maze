@@ -23,7 +23,7 @@
             android:textSize="50sp"
             android:textStyle="bold"
             android:text="! PORAŻKA !"
-            android:textColor="#000000"
+            android:textColor="#FF0000"
             android:layout_marginTop="35dp"
             android:layout_below="@id/options"
             android:layout_centerHorizontal="true"

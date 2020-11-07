@@ -35,7 +35,7 @@ public class OptionsActivity extends AppCompatActivity implements AdapterView.On
         levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#00E676"));
                 ((TextView) parent.getChildAt(0)).setTextSize(25);
                 String text = parent.getItemAtPosition(position).toString();
                 prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
@@ -61,7 +61,7 @@ public class OptionsActivity extends AppCompatActivity implements AdapterView.On
         SteeringSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#00E676"));
                 ((TextView) parent.getChildAt(0)).setTextSize(25);
                 String text = parent.getItemAtPosition(position).toString();
                 prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
@@ -87,7 +87,7 @@ public class OptionsActivity extends AppCompatActivity implements AdapterView.On
         GravitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#00E676"));
                 ((TextView) parent.getChildAt(0)).setTextSize(25);
                 String text = parent.getItemAtPosition(position).toString();
                 prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
@@ -113,7 +113,7 @@ public class OptionsActivity extends AppCompatActivity implements AdapterView.On
         BallSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#00E676"));
                 ((TextView) parent.getChildAt(0)).setTextSize(25);
                 String text = parent.getItemAtPosition(position).toString();
                 prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
@@ -139,7 +139,7 @@ public class OptionsActivity extends AppCompatActivity implements AdapterView.On
         GameModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#00E676"));
                 ((TextView) parent.getChildAt(0)).setTextSize(25);
                 String text = parent.getItemAtPosition(position).toString();
                 prefs = getSharedPreferences("game", Context.MODE_PRIVATE);
