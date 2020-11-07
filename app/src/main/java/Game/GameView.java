@@ -289,7 +289,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             if (isOver){
                 isPlaying = false;
                 if (win){
-                    paint.setColor(Color.RED);
+                    paint.setColor(Color.parseColor("#1DE9B6"));
                     paint.setTextSize(150);
                     paint.setTypeface(Typeface.create("Arial",Typeface.BOLD_ITALIC));
                     paint.setTextAlign(Paint.Align.CENTER);

@@ -17,7 +17,7 @@
     android:textSize="50sp"
     android:textStyle="bold"
     android:text="Labirynt"
-    android:textColor="#FF0900"
+    android:textColor="#1DE9B6"
     android:layout_above="@id/play"
     android:layout_below="@id/options"
     android:layout_centerHorizontal="true"/>
