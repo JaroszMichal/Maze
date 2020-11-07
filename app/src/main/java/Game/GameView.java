@@ -293,7 +293,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     paint.setTextSize(150);
                     paint.setTypeface(Typeface.create("Arial",Typeface.BOLD_ITALIC));
                     paint.setTextAlign(Paint.Align.CENTER);
-                    canvas.drawText("Wygrałeś!, Twój czas: "+timeFormat(gameTime),canvas.getWidth()/2,canvas.getHeight()/2,paint);
+                    canvas.drawText("B r a w o ! Twój czas: "+timeFormat(gameTime),canvas.getWidth()/2,canvas.getHeight()/2,paint);
                     getHolder().unlockCanvasAndPost(canvas);
                     try {
                         Thread.sleep(5000);
